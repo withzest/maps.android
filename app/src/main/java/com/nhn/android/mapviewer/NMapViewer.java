@@ -56,8 +56,8 @@ public class NMapViewer extends NMapActivity {
 	private static final String LOG_TAG = "NMapViewer";
 	private static final boolean DEBUG = false;
 
-	// set your API key which is registered for NMapViewer library.
-	private static final String API_KEY = "Your API Key";
+	// set your Client ID which is registered for NMapViewer library.
+	private static final String CLIENT_ID = "";
 
 	private MapContainerView mMapContainerView;
 
@@ -113,8 +113,8 @@ public class NMapViewer extends NMapActivity {
 			setContentView(mMapContainerView);
 		}
 
-		// set a registered API key for Open MapViewer Library
-		mMapView.setApiKey(API_KEY);
+		// set a registered Client Id for Open MapViewer Library
+		mMapView.setClientId(CLIENT_ID);
 
 		// initialize map view
 		mMapView.setClickable(true);
@@ -654,6 +654,7 @@ public class NMapViewer extends NMapActivity {
 	};
 
 	/* Local Functions */
+	private static boolean mIsMapEnlared = false;
 
 	private void restoreInstanceState() {
 		mPreferences = getPreferences(MODE_PRIVATE);
@@ -669,6 +670,12 @@ public class NMapViewer extends NMapActivity {
 		mMapController.setMapViewTrafficMode(trafficMode);
 		mMapController.setMapViewBicycleMode(bicycleMode);
 		mMapController.setMapCenter(new NGeoPoint(longitudeE6, latitudeE6), level);
+
+		if (mIsMapEnlared) {
+			mMapView.setScalingFactor(2.0F);
+		} else {
+			mMapView.setScalingFactor(1.0F);
+		}
 	}
 
 	private void saveInstanceState() {
@@ -710,7 +717,9 @@ public class NMapViewer extends NMapActivity {
 	private static final int MENU_ITEM_TEST_PATH_DATA = MENU_ITEM_TEST_MODE + 2;
 	private static final int MENU_ITEM_TEST_FLOATING_DATA = MENU_ITEM_TEST_MODE + 3;
 	private static final int MENU_ITEM_TEST_AUTO_ROTATE = MENU_ITEM_TEST_MODE + 4;
+	private static final int MENU_ITEM_TEST_SCALING_FACTOR = MENU_ITEM_TEST_MODE + 5;
 	private static final int MENU_ITEM_TEST_NEW_ACTIVITY = MENU_ITEM_TEST_MODE + 7;
+	private static final int MENU_ITEM_TEST_VISIBLE_BOUNDS = MENU_ITEM_TEST_MODE + 8;
 
 	/**
 	 * Invoked during init to give the Activity a chance to set up its Menu.
@@ -766,6 +775,9 @@ public class NMapViewer extends NMapActivity {
 		menuItem = subMenu.add(0, MENU_ITEM_TEST_NEW_ACTIVITY, Menu.NONE, "New Activity");
 		menuItem.setAlphabeticShortcut('n');
 
+		menuItem = subMenu.add(0, MENU_ITEM_TEST_VISIBLE_BOUNDS, Menu.NONE, "Test Visible Bounds");
+		menuItem.setAlphabeticShortcut('v');
+
 		menuItem = subMenu.add(0, MENU_ITEM_TEST_POI_DATA, Menu.NONE, "마커 표시");
 		menuItem.setAlphabeticShortcut('p');
 
@@ -774,6 +786,9 @@ public class NMapViewer extends NMapActivity {
 
 		menuItem = subMenu.add(0, MENU_ITEM_TEST_FLOATING_DATA, Menu.NONE, "직접 지정");
 		menuItem.setAlphabeticShortcut('f');
+
+		menuItem = subMenu.add(0, MENU_ITEM_TEST_SCALING_FACTOR, Menu.NONE, "지도 크게보기");
+		menuItem.setAlphabeticShortcut('s');
 
 		menuItem = subMenu.add(0, MENU_ITEM_TEST_AUTO_ROTATE, Menu.NONE, "지도 회전");
 		menuItem.setAlphabeticShortcut('a');
@@ -877,6 +892,30 @@ public class NMapViewer extends NMapActivity {
 			case MENU_ITEM_TEST_NEW_ACTIVITY:
 				Intent intent = new Intent(this, FragmentActivity.class);
 				startActivity(intent);
+				return true;
+
+			case MENU_ITEM_TEST_VISIBLE_BOUNDS:
+				// test visible bounds
+				Rect viewFrame = mMapView.getMapController().getViewFrameVisible();
+				mMapController.setBoundsVisible(0, 0, viewFrame.width(), viewFrame.height() - 200);
+
+				// add POI data overlay
+				mOverlayManager.clearOverlays();
+
+				testPathDataOverlay();
+				return true;
+
+			case MENU_ITEM_TEST_SCALING_FACTOR:
+				if (mMapView.getMapProjection().isProjectionScaled()) {
+					if (mMapView.getMapProjection().isMapHD()) {
+						mMapView.setScalingFactor(2.0F, false);
+					} else {
+						mMapView.setScalingFactor(1.0F, false);
+					}
+				} else {
+					mMapView.setScalingFactor(2.0F, true);
+				}
+				mIsMapEnlared = mMapView.getMapProjection().isProjectionScaled();
 				return true;
 
 			case MENU_ITEM_TEST_AUTO_ROTATE:
