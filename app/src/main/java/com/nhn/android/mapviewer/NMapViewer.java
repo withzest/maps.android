@@ -1,16 +1,25 @@
-/* 
- * NMapViewer.java $version 2010. 1. 1
- * 
- * Copyright 2010 NHN Corp. All rights Reserved. 
- * NHN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms. 
+/*
+ * Copyright 2016 NAVER Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package com.nhn.android.mapviewer;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -18,7 +27,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -702,25 +710,6 @@ public class NMapViewer extends NMapActivity {
 
 	}
 
-	/* Menus */
-	private static final int MENU_ITEM_CLEAR_MAP = 10;
-	private static final int MENU_ITEM_MAP_MODE = 20;
-	private static final int MENU_ITEM_MAP_MODE_SUB_VECTOR = MENU_ITEM_MAP_MODE + 1;
-	private static final int MENU_ITEM_MAP_MODE_SUB_SATELLITE = MENU_ITEM_MAP_MODE + 2;
-	private static final int MENU_ITEM_MAP_MODE_SUB_TRAFFIC = MENU_ITEM_MAP_MODE + 3;
-	private static final int MENU_ITEM_MAP_MODE_SUB_BICYCLE = MENU_ITEM_MAP_MODE + 4;
-	private static final int MENU_ITEM_ZOOM_CONTROLS = 30;
-	private static final int MENU_ITEM_MY_LOCATION = 40;
-
-	private static final int MENU_ITEM_TEST_MODE = 50;
-	private static final int MENU_ITEM_TEST_POI_DATA = MENU_ITEM_TEST_MODE + 1;
-	private static final int MENU_ITEM_TEST_PATH_DATA = MENU_ITEM_TEST_MODE + 2;
-	private static final int MENU_ITEM_TEST_FLOATING_DATA = MENU_ITEM_TEST_MODE + 3;
-	private static final int MENU_ITEM_TEST_AUTO_ROTATE = MENU_ITEM_TEST_MODE + 4;
-	private static final int MENU_ITEM_TEST_SCALING_FACTOR = MENU_ITEM_TEST_MODE + 5;
-	private static final int MENU_ITEM_TEST_NEW_ACTIVITY = MENU_ITEM_TEST_MODE + 7;
-	private static final int MENU_ITEM_TEST_VISIBLE_BOUNDS = MENU_ITEM_TEST_MODE + 8;
-
 	/**
 	 * Invoked during init to give the Activity a chance to set up its Menu.
 	 * 
@@ -729,107 +718,28 @@ public class NMapViewer extends NMapActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		MenuItem menuItem = null;
-		SubMenu subMenu = null;
-
-		menuItem = menu.add(Menu.NONE, MENU_ITEM_CLEAR_MAP, Menu.CATEGORY_SECONDARY, "초기화");
-		menuItem.setAlphabeticShortcut('c');
-		menuItem.setIcon(android.R.drawable.ic_menu_revert);
-
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_MAP_MODE, Menu.CATEGORY_SECONDARY, "지도보기");
-		subMenu.setIcon(android.R.drawable.ic_menu_mapmode);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_VECTOR, Menu.NONE, "일반지도");
-		menuItem.setAlphabeticShortcut('m');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_SATELLITE, Menu.NONE, "위성지도");
-		menuItem.setAlphabeticShortcut('s');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_TRAFFIC, Menu.NONE, "실시간교통");
-		menuItem.setAlphabeticShortcut('t');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = subMenu.add(0, MENU_ITEM_MAP_MODE_SUB_BICYCLE, Menu.NONE, "자전거지도");
-		menuItem.setAlphabeticShortcut('b');
-		menuItem.setCheckable(true);
-		menuItem.setChecked(false);
-
-		menuItem = menu.add(0, MENU_ITEM_ZOOM_CONTROLS, Menu.CATEGORY_SECONDARY, "Zoom Controls");
-		menuItem.setAlphabeticShortcut('z');
-		menuItem.setIcon(android.R.drawable.ic_menu_zoom);
-
-		menuItem = menu.add(0, MENU_ITEM_MY_LOCATION, Menu.CATEGORY_SECONDARY, "내위치");
-		menuItem.setAlphabeticShortcut('l');
-		menuItem.setIcon(android.R.drawable.ic_menu_mylocation);
-
-		subMenu = menu.addSubMenu(Menu.NONE, MENU_ITEM_TEST_MODE, Menu.CATEGORY_SECONDARY, "테스트");
-		subMenu.setIcon(android.R.drawable.ic_menu_more);
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_NEW_ACTIVITY, Menu.NONE, "New Activity");
-		menuItem.setAlphabeticShortcut('n');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_VISIBLE_BOUNDS, Menu.NONE, "Test Visible Bounds");
-		menuItem.setAlphabeticShortcut('v');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_POI_DATA, Menu.NONE, "마커 표시");
-		menuItem.setAlphabeticShortcut('p');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_PATH_DATA, Menu.NONE, "경로선 표시");
-		menuItem.setAlphabeticShortcut('t');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_FLOATING_DATA, Menu.NONE, "직접 지정");
-		menuItem.setAlphabeticShortcut('f');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_SCALING_FACTOR, Menu.NONE, "지도 크게보기");
-		menuItem.setAlphabeticShortcut('s');
-
-		menuItem = subMenu.add(0, MENU_ITEM_TEST_AUTO_ROTATE, Menu.NONE, "지도 회전");
-		menuItem.setAlphabeticShortcut('a');
-
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu pMenu) {
-		super.onPrepareOptionsMenu(pMenu);
-
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		int viewMode = mMapController.getMapViewMode();
 		boolean isTraffic = mMapController.getMapViewTrafficMode();
 		boolean isBicycle = mMapController.getMapViewBicycleMode();
 
-		pMenu.findItem(MENU_ITEM_CLEAR_MAP).setEnabled(
-			(viewMode != NMapView.VIEW_MODE_VECTOR) || isTraffic || mOverlayManager.sizeofOverlays() > 0);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_VECTOR).setChecked(viewMode == NMapView.VIEW_MODE_VECTOR);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_SATELLITE).setChecked(viewMode == NMapView.VIEW_MODE_HYBRID);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_TRAFFIC).setChecked(isTraffic);
-		pMenu.findItem(MENU_ITEM_MAP_MODE_SUB_BICYCLE).setChecked(isBicycle);
-
-		if (mMyLocationOverlay == null) {
-			pMenu.findItem(MENU_ITEM_MY_LOCATION).setEnabled(false);
-		}
-
+		menu.findItem(R.id.action_revert).setEnabled((viewMode != NMapView.VIEW_MODE_VECTOR) || isTraffic || mOverlayManager.sizeofOverlays() > 0);
+		menu.findItem(R.id.action_vector).setChecked(viewMode == NMapView.VIEW_MODE_VECTOR);
+		menu.findItem(R.id.action_satellite).setChecked(viewMode == NMapView.VIEW_MODE_HYBRID);
+		menu.findItem(R.id.action_traffic).setChecked(isTraffic);
+		menu.findItem(R.id.action_bicycle).setChecked(isBicycle);
 		return true;
 	}
 
-	/**
-	 * Invoked when the user selects an item from the Menu.
-	 * 
-	 * @param item the Menu entry which was selected
-	 * @return true if the Menu item was legit (and we consumed it), false
-	 *         otherwise
-	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch (item.getItemId()) {
-			case MENU_ITEM_CLEAR_MAP:
+			case R.id.action_revert:
 				if (mMyLocationOverlay != null) {
 					stopMyLocation();
 					mOverlayManager.removeOverlay(mMyLocationOverlay);
@@ -840,41 +750,43 @@ public class NMapViewer extends NMapActivity {
 				mMapController.setMapViewBicycleMode(false);
 
 				mOverlayManager.clearOverlays();
-
 				return true;
-
-			case MENU_ITEM_MAP_MODE_SUB_VECTOR:
+			case R.id.action_vector:
+				invalidateMenu();
 				mMapController.setMapViewMode(NMapView.VIEW_MODE_VECTOR);
 				return true;
 
-			case MENU_ITEM_MAP_MODE_SUB_SATELLITE:
+			case R.id.action_satellite:
+				invalidateMenu();
 				mMapController.setMapViewMode(NMapView.VIEW_MODE_HYBRID);
 				return true;
 
-			case MENU_ITEM_MAP_MODE_SUB_TRAFFIC:
+			case R.id.action_traffic:
+				invalidateMenu();
 				mMapController.setMapViewTrafficMode(!mMapController.getMapViewTrafficMode());
 				return true;
 
-			case MENU_ITEM_MAP_MODE_SUB_BICYCLE:
+			case R.id.action_bicycle:
+				invalidateMenu();
 				mMapController.setMapViewBicycleMode(!mMapController.getMapViewBicycleMode());
 				return true;
 
-			case MENU_ITEM_ZOOM_CONTROLS:
+			case R.id.action_zoom:
 				mMapView.displayZoomControls(true);
 				return true;
 
-			case MENU_ITEM_MY_LOCATION:
+			case R.id.action_my_location:
 				startMyLocation();
 				return true;
 
-			case MENU_ITEM_TEST_POI_DATA:
+			case R.id.action_poi_data:
 				mOverlayManager.clearOverlays();
 
 				// add POI data overlay
 				testPOIdataOverlay();
 				return true;
 
-			case MENU_ITEM_TEST_PATH_DATA:
+			case R.id.action_path_data:
 				mOverlayManager.clearOverlays();
 
 				// add path data overlay
@@ -884,17 +796,17 @@ public class NMapViewer extends NMapActivity {
 				testPathPOIdataOverlay();
 				return true;
 
-			case MENU_ITEM_TEST_FLOATING_DATA:
+			case R.id.action_floating_data:
 				mOverlayManager.clearOverlays();
 				testFloatingPOIdataOverlay();
 				return true;
 
-			case MENU_ITEM_TEST_NEW_ACTIVITY:
-				Intent intent = new Intent(this, FragmentActivity.class);
+			case R.id.action_new_activity:
+				Intent intent = new Intent(this, FragmentMapActivity.class);
 				startActivity(intent);
 				return true;
 
-			case MENU_ITEM_TEST_VISIBLE_BOUNDS:
+			case R.id.action_visible_bounds:
 				// test visible bounds
 				Rect viewFrame = mMapView.getMapController().getViewFrameVisible();
 				mMapController.setBoundsVisible(0, 0, viewFrame.width(), viewFrame.height() - 200);
@@ -905,7 +817,7 @@ public class NMapViewer extends NMapActivity {
 				testPathDataOverlay();
 				return true;
 
-			case MENU_ITEM_TEST_SCALING_FACTOR:
+			case R.id.action_scale_factor:
 				if (mMapView.getMapProjection().isProjectionScaled()) {
 					if (mMapView.getMapProjection().isMapHD()) {
 						mMapView.setScalingFactor(2.0F, false);
@@ -918,7 +830,7 @@ public class NMapViewer extends NMapActivity {
 				mIsMapEnlared = mMapView.getMapProjection().isProjectionScaled();
 				return true;
 
-			case MENU_ITEM_TEST_AUTO_ROTATE:
+			case R.id.action_auto_rotate:
 				if (mMapView.isAutoRotateEnabled()) {
 					mMapView.setAutoRotateEnabled(false, false);
 
@@ -935,9 +847,18 @@ public class NMapViewer extends NMapActivity {
 					mMapContainerView.requestLayout();
 				}
 				return true;
-		}
+			case R.id.action_navermap:
+				mMapView.executeNaverMap();
+				return true;
 
-		return super.onOptionsItemSelected(item);
+		}
+		return false;
+	}
+
+	private void invalidateMenu() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			invalidateOptionsMenu();
+		}
 	}
 
 	private static final long AUTO_ROTATE_INTERVAL = 2000;
