@@ -32,6 +32,11 @@
 					android:alphabeticShortcut="b"
 					android:checkable="true"
 					android:checked="false"/>
+				<item android:id="@+id/action_alpha_layer"
+					android:title="투명레이어지도"
+					android:alphabeticShortcut="a"
+					android:checkable="true"
+					android:checked="false"/>
 			</group>
 		</menu>
 	</item>

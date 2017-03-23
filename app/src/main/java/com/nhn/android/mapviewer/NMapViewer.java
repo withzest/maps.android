@@ -727,12 +727,15 @@ public class NMapViewer extends NMapActivity {
 		int viewMode = mMapController.getMapViewMode();
 		boolean isTraffic = mMapController.getMapViewTrafficMode();
 		boolean isBicycle = mMapController.getMapViewBicycleMode();
+		boolean isAlphaLayer = mMapController.getMapAlphaLayerMode();
 
 		menu.findItem(R.id.action_revert).setEnabled((viewMode != NMapView.VIEW_MODE_VECTOR) || isTraffic || mOverlayManager.sizeofOverlays() > 0);
 		menu.findItem(R.id.action_vector).setChecked(viewMode == NMapView.VIEW_MODE_VECTOR);
 		menu.findItem(R.id.action_satellite).setChecked(viewMode == NMapView.VIEW_MODE_HYBRID);
 		menu.findItem(R.id.action_traffic).setChecked(isTraffic);
 		menu.findItem(R.id.action_bicycle).setChecked(isBicycle);
+		menu.findItem(R.id.action_alpha_layer).setChecked(isAlphaLayer);
+
 		return true;
 	}
 
@@ -769,6 +772,11 @@ public class NMapViewer extends NMapActivity {
 			case R.id.action_bicycle:
 				invalidateMenu();
 				mMapController.setMapViewBicycleMode(!mMapController.getMapViewBicycleMode());
+				return true;
+
+			case R.id.action_alpha_layer:
+				invalidateMenu();
+				mMapController.setMapAlphaLayerMode(!mMapController.getMapAlphaLayerMode(), 0xccFFFFFF);
 				return true;
 
 			case R.id.action_zoom:
