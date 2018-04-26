@@ -19,6 +19,14 @@ dependencies {
 }
 ```
 
+for Naver Cloud Platform User:
+
+```
+dependencies {
+   compile 'com.naver.maps.open:naver-map-api:2.1.5-ncp@aar'
+}
+```
+
 License
 ==
 
