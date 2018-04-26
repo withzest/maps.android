@@ -4,7 +4,7 @@
 
 Installation
 ==
-- 상세한 내용은 [http://docs.ncloud.com/ko/naveropenapi_v2/naveropenapi-5-6.html] 에서 'Android용 지도 사용하기' 탭 참고
+- 상세한 내용은 [http://docs.ncloud.com/ko/naveropenapi_v2/naveropenapi-5-6.html] 참고
 
 ## How to import
 
